@@ -17,3 +17,23 @@ model Note {
   lastUpdate DateTime @updatedAt
   created    DateTime @default(now())
 }
+
+model GameEntity {
+  id                  String           @id @default(uuid()) @db.Uuid
+  name                String           @unique
+  text                String
+  tags                String[]
+  lastUpdate          DateTime         @updatedAt
+  created             DateTime         @default(now())
+  gameEntityLinksFrom GameEntityLink[]
+}
+
+model GameEntityLink {
+  id          String     @id @default(uuid()) @db.Uuid
+  from        GameEntity @relation(fields: [fromId], references: [id])
+  fromId      String
+  to          GameEntity @relation(fields: [toId], references: [id])
+  toId        String
+  description String
+  created     DateTime   @default(now())
+}
