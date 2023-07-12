@@ -1,12 +1,12 @@
-import {PrismaClient} from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 export const prismaClient = new PrismaClient({
-    datasources: {
-        db: {
-            url: process.env['DATABASE_URL']
-        }
+  datasources: {
+    db: {
+      url: process.env['DATABASE_URL'],
     },
-    // fetchOptions: {
-    //     next: { revalidate: 5}
-    // }
-})
+  },
+  // fetchOptions: {
+  //     next: { revalidate: 5}
+  // }
+});
