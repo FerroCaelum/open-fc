@@ -19,7 +19,7 @@ export const NotesList: React.FunctionComponent = async () => {
     </div>
 }
 
-const NoteItem = ({note}: {note: Note}) => {
+const NoteItem = ({note}: { note: Note }) => {
     return <li>
         <Link href={`/notes/${note.id}`}>{note.title} @ {note.created.toISOString()}</Link>
     </li>
