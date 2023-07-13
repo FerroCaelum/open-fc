@@ -12,7 +12,3 @@ const GameEntityView = async ({ params }: { params: { entityId: string } }) => {
 };
 
 export default GameEntityView;
-
-// /shop/clothes/[...note_id]/
-
-///shop/clothes/tops/t-shirts
