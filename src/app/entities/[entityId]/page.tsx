@@ -1,4 +1,4 @@
-import { getOneGameEntity } from '@/app/entities/entitiesClient/entitiesClient';
+import { getOneGameEntity } from '@/app/entities/entitiesActions';
 import { GameEntityBox } from '@/app/entities/[entityId]/GameEntityBox';
 
 const GameEntityView = async ({ params }: { params: { entityId: string } }) => {

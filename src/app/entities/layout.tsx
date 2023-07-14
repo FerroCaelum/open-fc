@@ -1,5 +1,5 @@
 import React from 'react';
-import {EntitiesList} from "@/app/entities/EntitiesList";
+import {EntitiesList} from "@/app/entities/entitiesList/EntitiesList";
 
 const NotesLayout = ({
   children, // will be a page or nested layout
