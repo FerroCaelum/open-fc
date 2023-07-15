@@ -5,18 +5,27 @@ import { revalidatePath } from 'next/cache';
 export const addNote = async (data: FormData) => {
   await prismaClient.note.create({
     data: {
-      title: (data.get('title') as string) ?? '',
+      name: (data.get('name') as string) ?? '',
       text: (data.get('text') as string) ?? '',
     },
   });
-  revalidatePath('/notes/[id]');
+  revalidatePath('/notes');
 };
 
 export const getNotes = async () => prismaClient.note.findMany();
 
 export const getOneNote = (id: string) =>
-  prismaClient.note.findUnique({
+  prismaClient.note.findUniqueOrThrow({
     where: {
       id: id,
     },
   });
+
+export const removeNote = async (id: string) => {
+  await prismaClient.note.delete({
+    where: {
+      id: id,
+    },
+  });
+  revalidatePath('/notes');
+};

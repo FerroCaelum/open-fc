@@ -11,30 +11,22 @@ datasource db {
 }
 
 model Note {
-  id         String   @id @default(uuid()) @db.Uuid
-  text       String
-  title      String
-  lastUpdate DateTime @updatedAt
-  created    DateTime @default(now())
+  id            String     @id @default(uuid()) @db.Uuid
+  name          String     @unique
+  text          String
+  tags          String[]
+  lastUpdate    DateTime   @updatedAt
+  created       DateTime   @default(now())
+  noteLinksFrom NoteLink[] @relation("gameEntityLinksFrom")
+  noteLinksTo   NoteLink[] @relation("gameEntityLinksTo")
 }
 
-model GameEntity {
-  id                  String           @id @default(uuid()) @db.Uuid
-  name                String           @unique
-  text                String
-  tags                String[]
-  lastUpdate          DateTime         @updatedAt
-  created             DateTime         @default(now())
-  gameEntityLinksFrom GameEntityLink[] @relation("gameEntityLinksFrom")
-  gameEntityLinksTo   GameEntityLink[] @relation("gameEntityLinksTo")
-}
-
-model GameEntityLink {
-  id          String     @id @default(uuid()) @db.Uuid
-  from        GameEntity @relation("gameEntityLinksFrom", fields: [fromId], references: [id])
-  fromId      String     @db.Uuid
-  to          GameEntity @relation("gameEntityLinksTo", fields: [toId], references: [id])
-  toId        String     @db.Uuid
+model NoteLink {
+  id          String   @id @default(uuid()) @db.Uuid
+  from        Note     @relation("gameEntityLinksFrom", fields: [fromId], references: [id])
+  fromId      String   @db.Uuid
+  to          Note     @relation("gameEntityLinksTo", fields: [toId], references: [id])
+  toId        String   @db.Uuid
   description String
-  created     DateTime   @default(now())
+  created     DateTime @default(now())
 }

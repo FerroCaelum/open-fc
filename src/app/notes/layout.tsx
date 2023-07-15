@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotesList } from '@/app/notes/NotesList';
+import { NotesList } from '@/app/notes/notesList/NotesList';
 
 const NotesLayout = ({
   children, // will be a page or nested layout
