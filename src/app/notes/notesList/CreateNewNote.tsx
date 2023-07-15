@@ -1,18 +1,18 @@
 'use client';
-import { addGameEntity } from '@/app/entities/entitiesActions';
 import { toast } from 'react-toastify';
 import React from 'react';
+import { addNote } from '@/app/notes/notesActions';
 
-export const CreateNewEntity = () => {
-  const addNewEntity = async (form: FormData) => {
+export const CreateNewNote = () => {
+  const addNewNote = async (form: FormData) => {
     try {
-      await addGameEntity(form);
+      await addNote(form);
     } catch (error: any) {
       toast(error.message);
     }
   };
   return (
-    <form action={(form) => addNewEntity(form)}>
+    <form action={(form) => addNewNote(form)}>
       <fieldset>
         <legend>Name</legend>
         <input name="name" />
