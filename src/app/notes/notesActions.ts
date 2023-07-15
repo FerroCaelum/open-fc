@@ -29,3 +29,16 @@ export const removeNote = async (id: string) => {
   });
   revalidatePath('/notes');
 };
+
+export const updateNote = async (id: string, data: FormData) => {
+  await prismaClient.note.update({
+    where: {
+      id: id,
+    },
+    data: {
+      name: (data.get('name') as string) ?? '',
+      text: (data.get('text') as string) ?? '',
+    },
+  });
+  revalidatePath('/notes');
+};
