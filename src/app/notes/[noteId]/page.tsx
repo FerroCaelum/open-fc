@@ -1,4 +1,4 @@
-import { getOneNote } from '@/app/notes/notesClient/notesApi';
+import { getOneNote } from '@/app/notes/notesActions';
 
 const Note = async ({ params }: { params: { noteId: string } }) => {
   const note = await getOneNote(params.noteId);

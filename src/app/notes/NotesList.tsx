@@ -1,6 +1,6 @@
 import React from 'react';
 import { Note } from '@prisma/client';
-import { addNote, getNotes } from '@/app/notes/notesClient/notesApi';
+import { addNote, getNotes } from '@/app/notes/notesActions';
 import Link from 'next/link';
 
 export const NotesList: React.FunctionComponent = async () => {
