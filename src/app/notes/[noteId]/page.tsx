@@ -4,11 +4,7 @@ import { NoteBox } from '@/app/notes/[noteId]/NoteBox';
 const Note = async ({ params }: { params: { noteId: string } }) => {
   const note = await getOneNote(params.noteId);
 
-  return (
-    <div>
-      <NoteBox note={note} />
-    </div>
-  );
+  return <NoteBox note={note} />;
 };
 
 export default Note;

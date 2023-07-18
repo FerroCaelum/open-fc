@@ -1,7 +1,5 @@
 import React from 'react';
-import { Note } from '@prisma/client';
-import { addNote, getNotes } from '@/app/notes/notesActions';
-import Link from 'next/link';
+import { getNotes } from '@/app/notes/notesActions';
 import { CreateNewNote } from '@/app/notes/notesList/CreateNewNote';
 import { NoteItem } from '@/app/notes/notesList/NoteItem';
 
@@ -10,10 +8,8 @@ export const NotesList: React.FunctionComponent = async () => {
 
   return (
     <div>
-      <h2>notes list:</h2>
-      <div>
-        <CreateNewNote />
-      </div>
+      <h2>Notes</h2>
+      <CreateNewNote />
       <ul>
         {notes.map((note) => (
           <NoteItem key={note.id} note={note} />
