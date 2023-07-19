@@ -5,7 +5,7 @@ import { Note } from '@prisma/client';
 import Link from 'next/link';
 import { Trash2 } from 'react-feather';
 import { toast } from 'react-toastify';
-import { removeNote } from '@/app/notes/notesActions';
+import { removeNote } from '@/app/notes/actions';
 
 export const NoteItem = ({ note }: { note: Note }) => {
   return (

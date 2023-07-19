@@ -1,7 +1,7 @@
 'use client';
 import { toast } from 'react-toastify';
 import React from 'react';
-import { addNote } from '@/app/notes/notesActions';
+import { addNote } from '@/app/notes/actions';
 
 export const CreateNewNote = () => {
   const addNewNote = async (form: FormData) => {

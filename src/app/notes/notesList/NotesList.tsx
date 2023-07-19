@@ -1,5 +1,5 @@
 import React from 'react';
-import { getNotes } from '@/app/notes/notesActions';
+import { getNotes } from '@/app/notes/actions';
 import { CreateNewNote } from '@/app/notes/notesList/CreateNewNote';
 import { NoteItem } from '@/app/notes/notesList/NoteItem';
 
