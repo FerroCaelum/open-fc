@@ -1,7 +1,7 @@
 'use client';
 import { Note } from '@prisma/client';
 import { toast } from 'react-toastify';
-import { updateNote } from '@/app/notes/notesActions';
+import { updateNote } from '@/app/notes/actions';
 
 export const NoteBox = ({ note }: { note: Note }) => {
   const saveNote = async (form: FormData) => {
