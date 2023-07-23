@@ -41,7 +41,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
   return (
     <form
       action={() => saveNote(name, noteMD)}
-      className="p-8 w-full space-y-10 flex flex-col"
+      className="p-8 w-full space-y-10 flex flex-col overflow-y-scroll"
     >
       <section className="flex justify-between">
         {nameEditing ? (
@@ -57,7 +57,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
             autoFocus
           />
         ) : (
-          <Tooltip message="Click to edit!">
+          <Tooltip message="Click to edit!" position="bottom">
             <button
               className="text-3xl cursor-pointer inline"
               onClick={() => setNameEditing(true)}
@@ -88,7 +88,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
         <div className="relative flex-1">
           {descriptionEditing ? (
             <div data-color-mode="dark" className="h-full">
-              <MDEditor value={noteMD} onChange={setNoteMD} height="100%" />
+              <MDEditor value={noteMD} onChange={setNoteMD} height="30rem" />
             </div>
           ) : (
             <Markdown className="h-full my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
