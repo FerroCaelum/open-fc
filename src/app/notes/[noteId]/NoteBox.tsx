@@ -41,7 +41,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
   return (
     <form
       action={() => saveNote(name, noteMD)}
-      className="p-8 w-full space-y-10"
+      className="p-8 w-full space-y-10 flex flex-col"
     >
       <section className="flex justify-between">
         {nameEditing ? (
@@ -73,7 +73,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
 
       <section>{tags}</section>
 
-      <section className="space-y-5">
+      <section className="flex flex-col flex-1 space-y-5">
         <div className="flex items-center gap-5">
           <h4 className="text-xl">Description</h4>
           <Button
@@ -85,13 +85,13 @@ export const NoteBox = ({ note }: { note: Note }) => {
             <Edit />
           </Button>
         </div>
-        <div className="relative">
+        <div className="relative flex-1">
           {descriptionEditing ? (
-            <div data-color-mode="dark">
+            <div data-color-mode="dark" className="h-full">
               <MDEditor value={noteMD} onChange={setNoteMD} height="100%" />
             </div>
           ) : (
-            <Markdown className="my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
+            <Markdown className="h-full my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
               {noteMD || ''}
             </Markdown>
           )}
