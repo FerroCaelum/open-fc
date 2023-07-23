@@ -2,6 +2,7 @@
 import { toast } from 'react-toastify';
 import React from 'react';
 import { addNote } from '@/app/notes/actions';
+import { Button, Input } from 'react-daisyui';
 
 export const CreateNewNote = () => {
   const addNewNote = async (form: FormData) => {
@@ -15,11 +16,9 @@ export const CreateNewNote = () => {
     <form action={(form) => addNewNote(form)}>
       <fieldset>
         <legend>Name</legend>
-        <input name="name" />
+        <Input name="name" />
       </fieldset>
-      <button type="submit" className="rounded bg-amber-200 p-2">
-        Save
-      </button>
+      <Button type="submit">Save</Button>
     </form>
   );
 };
