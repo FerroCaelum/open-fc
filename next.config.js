@@ -2,8 +2,6 @@
 const nextConfig = {
   experimental: {
     serverActions: true,
-    typedRoutes: true,
-    appDir: true,
   },
   transpilePackages: ['react-daisyui'],
   reactStrictMode: true,
