@@ -7,7 +7,7 @@ const NotesLayout = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="h-scree flex">
+    <div className="h-screen flex">
       <aside className="h-screen bg-secondary sticky min-w-[10rem] overflow-y-scroll">
         <NotesList />
       </aside>
