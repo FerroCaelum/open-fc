@@ -2,32 +2,32 @@
 import { Note } from '@prisma/client';
 import { toast } from 'react-toastify';
 import { updateNote } from '@/app/notes/actions';
-import { Button, Input } from 'react-daisyui';
-import React, { TextareaHTMLAttributes, useCallback, useState } from 'react';
-import { MentionsInput, Mention } from 'react-mentions';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw } from 'draft-js';
-import { markdownToDraft } from 'markdown-draft-js';
-import draftToHtml from 'draftjs-to-html';
-import draftToMarkdown from 'draftjs-to-markdown';
-
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { Badge, Button, Input, Tooltip } from 'react-daisyui';
+import React, { useState } from 'react';
+import { Edit, Save } from 'react-feather';
+import MDEditor from '@uiw/react-md-editor';
+import Markdown from 'react-markdown';
 
 export const NoteBox = ({ note }: { note: Note }) => {
   const [name, setName] = useState(note.name);
-  const [nameEditing, setNameEditing] = useState(false);
   const [noteMD, setNoteMD] = useState<string | undefined>(note.text);
-  // const rawaObject = markdownToDraft(markdownString);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [secondEditorState, setSecondEditorState] = useState(
-    EditorState.createEmpty(),
-  );
+  const [nameEditing, setNameEditing] = useState(false);
+  const [descriptionEditing, setDescriptionEditing] = useState(false);
 
-  const handleEditorStateChange = (editorState: any) => {
-    setEditorState(editorState);
-  };
+  const tags =
+    note.tags.length !== 0 ? (
+      note.tags.map((tag) => (
+        <Badge color="primary" key={tag}>
+          {tag}
+        </Badge>
+      ))
+    ) : (
+      <Badge color="primary">No tags</Badge>
+    );
 
   const saveNote = async (name: string, text: string | undefined) => {
+    setDescriptionEditing(false);
+    setNameEditing(false);
     const fd = new FormData();
     fd.append('name', name);
     fd.append('text', text || '');
@@ -39,8 +39,11 @@ export const NoteBox = ({ note }: { note: Note }) => {
   };
 
   return (
-    <div className="w-full h-full">
-      <form action={() => saveNote(name, noteMD)} className="prose p-8">
+    <form
+      action={() => saveNote(name, noteMD)}
+      className="p-8 w-full space-y-10"
+    >
+      <section className="flex justify-between">
         {nameEditing ? (
           <Input
             id="name"
@@ -54,92 +57,46 @@ export const NoteBox = ({ note }: { note: Note }) => {
             autoFocus
           />
         ) : (
-          <h1 onClick={() => setNameEditing(true)}>{name}</h1>
+          <Tooltip message="Click to edit!">
+            <button
+              className="text-3xl cursor-pointer inline"
+              onClick={() => setNameEditing(true)}
+            >
+              {name}
+            </button>
+          </Tooltip>
         )}
-        <section>
-          {note.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </section>
-        <div className="bg-white text-black">
-          <Editor
-            className="bg-white"
-            editorState={editorState}
-            toolbarClassName="editor-toolbar"
-            wrapperClassName="editor-wrapper"
-            editorClassName="editor"
-            onEditorStateChange={setEditorState}
-            mention={{
-              separator: ' ',
-              trigger: '@',
-              suggestions: [
-                { text: 'APPLE', value: 'apple', url: 'apple' },
-                { text: 'BANANA', value: 'banana', url: 'banana' },
-                { text: 'CHERRY', value: 'cherry', url: 'cherry' },
-                { text: 'DURIAN', value: 'durian', url: 'durian' },
-                { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
-                { text: 'FIG', value: 'fig', url: 'fig' },
-                { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
-                { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
-              ],
-            }}
-            spellCheck
-          />
-
-          <Editor
-            className="bg-white"
-            editorState={secondEditorState}
-            toolbarClassName="editor-toolbar"
-            wrapperClassName="editor-wrapper"
-            editorClassName="editor"
-            onEditorStateChange={setSecondEditorState}
-            mention={{
-              separator: ' ',
-              trigger: '@',
-              suggestions: [
-                { text: 'APPLE', value: 'apple', url: 'apple' },
-                { text: 'BANANA', value: 'banana', url: 'banana' },
-                { text: 'CHERRY', value: 'cherry', url: 'cherry' },
-                { text: 'DURIAN', value: 'durian', url: 'durian' },
-                { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
-                { text: 'FIG', value: 'fig', url: 'fig' },
-                { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
-                { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
-              ],
-            }}
-            spellCheck
-          />
-        </div>
-
-        <pre>
-          {JSON.stringify(
-            convertToRaw(editorState.getCurrentContent()),
-            null,
-            2,
-          )}
-        </pre>
-
-        <Button className="p-2" type="submit">
-          Save
+        <Button color="primary" className="p-2" type="submit">
+          <Save />
         </Button>
-      </form>
-    </div>
+      </section>
+
+      <section>{tags}</section>
+
+      <section className="space-y-5">
+        <div className="flex items-center gap-5">
+          <h4 className="text-xl">Description</h4>
+          <Button
+            size="sm"
+            color="accent"
+            type="button"
+            onClick={() => setDescriptionEditing((e) => !e)}
+          >
+            <Edit />
+          </Button>
+        </div>
+        <div className="relative">
+          {descriptionEditing ? (
+            <div data-color-mode="dark">
+              <MDEditor value={noteMD} onChange={setNoteMD} height="100%" />
+            </div>
+          ) : (
+            <Markdown className="my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
+              {noteMD || ''}
+            </Markdown>
+          )}
+        </div>
+      </section>
+    </form>
   );
 };
-
-// eslint-disable-next-line react/display-name
-const NoteInputs = React.forwardRef((props: any, ref: any) => {
-  return (
-    <div>
-      <MentionsInput {...props} ref={ref}>
-        <Mention
-          trigger="@"
-          data={[
-            { id: 1, display: 'John Doe' },
-            { id: 2, display: 'Jane Doe' },
-          ]}
-        />
-      </MentionsInput>
-    </div>
-  );
-});
