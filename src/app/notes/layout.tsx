@@ -8,7 +8,7 @@ const NotesLayout = ({
 }) => {
   return (
     <div className="h-screen flex">
-      <aside className="h-screen bg-secondary sticky min-w-[10rem] overflow-y-scroll">
+      <aside className="h-screen max-h-screen w-[20rem] sticky">
         <NotesList />
       </aside>
       {children}
