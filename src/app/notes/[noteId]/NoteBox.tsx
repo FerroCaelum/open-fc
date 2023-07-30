@@ -1,5 +1,5 @@
 'use client';
-import { Note } from '@prisma/client';
+import { Note, NoteLink } from '@prisma/client';
 import { toast } from 'react-toastify';
 import { updateNote } from '@/app/notes/actions';
 import { Badge, Button, Input, Tooltip } from 'react-daisyui';
@@ -8,7 +8,13 @@ import { Edit, Save } from 'react-feather';
 import MDEditor from '@uiw/react-md-editor';
 import Markdown from 'react-markdown';
 
-export const NoteBox = ({ note }: { note: Note }) => {
+export const NoteBox = ({
+  note,
+  noteLinks,
+}: {
+  note: Note;
+  noteLinks: (NoteLink & { to: Note })[];
+}) => {
   const [name, setName] = useState(note.name);
   const [noteMD, setNoteMD] = useState<string | undefined>(note.text);
   const [nameEditing, setNameEditing] = useState(false);
@@ -24,6 +30,12 @@ export const NoteBox = ({ note }: { note: Note }) => {
     ) : (
       <Badge color="primary">No tags</Badge>
     );
+
+  const links = noteLinks.length ? (
+    noteLinks.map((link) => <p key={link.id}>Links to: {link.to.name}</p>)
+  ) : (
+    <p> No links yet </p>
+  );
 
   const saveNote = async (name: string, text: string | undefined) => {
     setDescriptionEditing(false);
@@ -72,6 +84,7 @@ export const NoteBox = ({ note }: { note: Note }) => {
       </section>
 
       <section>{tags}</section>
+      <section>{links}</section>
 
       <section className="flex flex-col flex-1 space-y-5">
         <div className="flex items-center gap-5">
