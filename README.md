@@ -1,5 +1,15 @@
 ## Setup
 
+We're using auth0; create .env.local with the following variables:
+
+```sh
+AUTH0_SECRET=''
+AUTH0_BASE_URL='http://localhost:3000'
+AUTH0_ISSUER_BASE_URL=''
+AUTH0_CLIENT_ID=''
+AUTH0_CLIENT_SECRET=''
+```
+
 Ensure you have postgres running on port 5432 or setup docker:
 
 ```bash
