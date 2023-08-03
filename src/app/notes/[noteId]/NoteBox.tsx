@@ -77,6 +77,8 @@ export const NoteBox = ({
   const [suggestionCarret, setSuggestionCarret] = useState(0);
   const [suggestionSelected, setSuggestionSelected] = useState(0);
 
+  const [search, setSearch] = React.useState('');
+
   const tags =
     note.tags.length !== 0 ? (
       note.tags.map((tag) => (
@@ -95,13 +97,6 @@ export const NoteBox = ({
   );
 
   const onNoteMDKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === '[') {
-      setSuggestionVisible(true);
-      const cursorPosition = e.currentTarget.selectionStart;
-      setSuggestionCarret(cursorPosition);
-      const { x, y } = getCaretPosition(e.currentTarget);
-      setSuggestionsPosition({ x, y });
-    }
     if (e.key === 'ArrowDown') {
       if (suggestionsVisible) {
         e.preventDefault();
@@ -130,13 +125,38 @@ export const NoteBox = ({
     }
   };
 
+  const onNoteMDKeyup = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === '[') {
+      setSearch('');
+      setSuggestionVisible(true);
+      setSuggestionSelected(0);
+      const cursorPosition = e.currentTarget.selectionStart;
+      setSuggestionCarret(cursorPosition);
+      const { x, y } = getCaretPosition(e.currentTarget);
+      setSuggestionsPosition({ x, y });
+    }
+    if (suggestionsVisible) {
+      const currentPosition = e.currentTarget.selectionStart;
+      if (currentPosition < suggestionCarret) {
+        setSuggestionVisible(false);
+        return;
+      }
+      const search = e.currentTarget.value.slice(
+        suggestionCarret,
+        currentPosition + 1,
+      );
+      setSearch(search);
+    }
+  };
+
   const onSuggestionsFetchRequested = (value: string) => {
     setNoteMD(
       (current) =>
-        current?.slice(0, suggestionCarret) +
+        current?.slice(0, suggestionCarret - 2) +
         value +
-        current?.slice(suggestionCarret + 1),
+        current?.slice(suggestionCarret + search.length - 1),
     );
+
     setSuggestionVisible(false);
   };
 
@@ -148,6 +168,9 @@ export const NoteBox = ({
         top: `${suggestionsPosition.y}px`,
       }}
     >
+      <Menu.Item>
+        <a>{search}</a>
+      </Menu.Item>
       <Menu.Item>
         <button
           onClick={() => onSuggestionsFetchRequested('Notatka1](note1)')}
@@ -240,6 +263,7 @@ export const NoteBox = ({
                 height="30rem"
                 textareaProps={{
                   onKeyDown: onNoteMDKeydown,
+                  onKeyUp: onNoteMDKeyup,
                 }}
               />
               {suggestionsVisible && PopupMenu}
