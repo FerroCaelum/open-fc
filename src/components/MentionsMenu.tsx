@@ -21,7 +21,7 @@ export const MentionsMenu: React.FC<{
       }}
     >
       <Menu.Item>
-        <a>{search}</a>
+        <a>{search || 'ㅤ'}</a>
       </Menu.Item>
       <Menu.Item>
         <button
