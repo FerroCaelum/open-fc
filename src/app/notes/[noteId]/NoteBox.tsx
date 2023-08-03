@@ -9,54 +9,7 @@ import MDEditor from '@uiw/react-md-editor';
 import Markdown from 'react-markdown';
 import { set } from 'date-fns';
 import clsx from 'clsx';
-
-function createCopy(textArea: HTMLTextAreaElement) {
-  var copy = document.createElement('div');
-  copy.textContent = textArea.value;
-  var style = getComputedStyle(textArea);
-  [
-    'fontFamily',
-    'fontSize',
-    'fontWeight',
-    'wordWrap',
-    'whiteSpace',
-    'borderLeftWidth',
-    'borderTopWidth',
-    'borderRightWidth',
-    'borderBottomWidth',
-  ].forEach(function (key) {
-    (copy.style as any)[key] = (style as any)[key];
-  });
-  copy.style.overflow = 'auto';
-  copy.style.width = textArea.offsetWidth + 'px';
-  copy.style.height = textArea.offsetHeight + 'px';
-  copy.style.position = 'absolute';
-  copy.style.left = textArea.offsetLeft + 'px';
-  copy.style.top = textArea.offsetTop + 'px';
-  document.body.appendChild(copy);
-  return copy;
-}
-
-function getCaretPosition(textArea: HTMLTextAreaElement) {
-  var start = textArea.selectionStart;
-  var end = textArea.selectionEnd;
-  var copy = createCopy(textArea);
-  var range = document.createRange();
-  range.setStart(copy.firstChild as any, start);
-  range.setEnd(copy.firstChild as any, end);
-  var selection = document.getSelection()!;
-  selection.removeAllRanges();
-  selection.addRange(range);
-  var rect = range.getBoundingClientRect();
-  document.body.removeChild(copy);
-  textArea.selectionStart = start;
-  textArea.selectionEnd = end;
-  textArea.focus();
-  return {
-    x: rect.left - textArea.scrollLeft,
-    y: rect.top - textArea.scrollTop,
-  };
-}
+import { getCaretPosition } from '@/common/getTextAreaPos';
 
 export const NoteBox = ({
   note,
@@ -227,9 +180,6 @@ export const NoteBox = ({
       action={() => saveNote(name, noteMD)}
       className="p-8 w-full space-y-10 flex flex-col overflow-y-scroll"
     >
-      <p>Carret: {suggestionCarret}</p>
-      <p>X: {suggestionsPosition.x}</p>
-      <p>Y: {suggestionsPosition.y}</p>
       <section className="flex justify-between">
         {nameEditing ? (
           <Input
