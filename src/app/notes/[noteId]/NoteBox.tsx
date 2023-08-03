@@ -78,6 +78,23 @@ export const NoteBox = ({
   const [suggestionSelected, setSuggestionSelected] = useState(0);
 
   const [search, setSearch] = React.useState('');
+  const [newCarretPosition, setNewCarretPosition] = React.useState({
+    position: -1,
+  });
+
+  React.useEffect(() => {
+    const editorTextArea = editorTextAreaRef.current;
+    if (editorTextArea && newCarretPosition.position > -1) {
+      editorTextArea.focus();
+      editorTextArea.setSelectionRange(
+        newCarretPosition.position - 1,
+        newCarretPosition.position - 1,
+      );
+      setNewCarretPosition({ position: -1 });
+    }
+  }, [newCarretPosition, setNewCarretPosition]);
+
+  const editorTextAreaRef = React.useRef<HTMLTextAreaElement>();
 
   const tags =
     note.tags.length !== 0 ? (
@@ -130,6 +147,7 @@ export const NoteBox = ({
       setSearch('');
       setSuggestionVisible(true);
       setSuggestionSelected(0);
+      editorTextAreaRef.current = e.currentTarget;
       const cursorPosition = e.currentTarget.selectionStart;
       setSuggestionCarret(cursorPosition);
       const { x, y } = getCaretPosition(e.currentTarget);
@@ -141,22 +159,23 @@ export const NoteBox = ({
         setSuggestionVisible(false);
         return;
       }
-      const search = e.currentTarget.value.slice(
+      const currSearch = e.currentTarget.value.slice(
         suggestionCarret,
-        currentPosition + 1,
+        currentPosition,
       );
-      setSearch(search);
+      setSearch(currSearch);
     }
   };
 
   const onSuggestionsFetchRequested = (value: string) => {
-    setNoteMD(
-      (current) =>
-        current?.slice(0, suggestionCarret - 2) +
-        value +
-        current?.slice(suggestionCarret + search.length - 1),
-    );
-
+    setNoteMD((current) => {
+      const prevText = current?.slice(0, suggestionCarret - 1);
+      const afterText = current?.slice(suggestionCarret + search.length);
+      return prevText + value + afterText;
+    });
+    if (editorTextAreaRef.current) {
+      setNewCarretPosition({ position: suggestionCarret + value.length });
+    }
     setSuggestionVisible(false);
   };
 
@@ -173,7 +192,7 @@ export const NoteBox = ({
       </Menu.Item>
       <Menu.Item>
         <button
-          onClick={() => onSuggestionsFetchRequested('Notatka1](note1)')}
+          onClick={() => onSuggestionsFetchRequested('[Notatka1](note1)')}
           className={clsx({ 'bg-accent': suggestionSelected === 0 })}
         >
           Notatka 1
@@ -181,7 +200,7 @@ export const NoteBox = ({
       </Menu.Item>
       <Menu.Item>
         <button
-          onClick={() => onSuggestionsFetchRequested('Notatka2](note2)')}
+          onClick={() => onSuggestionsFetchRequested('[Notatka2](note2)')}
           className={clsx({ 'bg-accent': suggestionSelected === 1 })}
         >
           Notatka 2
