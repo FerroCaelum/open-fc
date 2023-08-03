@@ -13,7 +13,12 @@ export const addNote = async (data: FormData) => {
   revalidatePath('/notes');
 };
 
-export const getNotes = async () => prismaClient.note.findMany();
+export const getNotes = async () =>
+  prismaClient.note.findMany({
+    orderBy: {
+      created: 'desc',
+    },
+  });
 
 export const getOneNote = (id: string) =>
   prismaClient.note.findUniqueOrThrow({
