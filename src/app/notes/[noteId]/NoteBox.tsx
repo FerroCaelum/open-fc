@@ -7,8 +7,8 @@ import React, { useState } from 'react';
 import { Edit, Save } from 'react-feather';
 import MDEditor from '@uiw/react-md-editor';
 import Markdown from 'react-markdown';
-import { useMentions } from './useMentions';
-import { MentionsMenu } from '@/components/MentionsMenu';
+import { useMentions } from '@/components/mentions/useMentions';
+import { MentionsMenu } from '@/components/mentions/MentionsMenu';
 
 export const NoteBox = ({
   note,
@@ -29,13 +29,8 @@ export const NoteBox = ({
   const {
     onTextAreaKeyDown: onNoteMDKeydown,
     onTextAreaKeyup: onNoteMDKeyup,
-    suggestionsVisible,
-    suggestionsPosition,
-    onSuggestion,
-    search,
-    selectedSuggestion,
-    filteredNotes,
-  } = useMentions(otherNotes, setNoteMD, createNote);
+    mentionsProps,
+  } = useMentions('[', otherNotes, setNoteMD, createNote);
 
   const tags =
     note.tags.length !== 0 ? (
@@ -127,16 +122,7 @@ export const NoteBox = ({
                   onKeyUp: onNoteMDKeyup,
                 }}
               />
-              {suggestionsVisible && (
-                <MentionsMenu
-                  suggestionsPosition={suggestionsPosition}
-                  suggestionChosenHandler={onSuggestion}
-                  search={search}
-                  suggestionSelected={selectedSuggestion}
-                  options={filteredNotes}
-                  createNote={createNote}
-                />
-              )}
+              <MentionsMenu {...mentionsProps} />
             </div>
           ) : (
             <Markdown className="h-full my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
