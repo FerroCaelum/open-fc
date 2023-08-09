@@ -3,14 +3,15 @@ import { prismaClient } from '@/db/prismaClient';
 import { extractLinks } from '@/notes/linking';
 import { revalidatePath } from 'next/cache';
 
-export const addNote = async (data: FormData) => {
-  await prismaClient.note.create({
+export const addNote = async ({ name }: { name: string }) => {
+  const newNote = await prismaClient.note.create({
     data: {
-      name: (data.get('name') as string) ?? '',
+      name,
       text: '',
     },
   });
   revalidatePath('/notes');
+  return newNote;
 };
 
 export const getNotes = async () =>

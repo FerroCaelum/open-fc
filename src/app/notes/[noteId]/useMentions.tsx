@@ -1,8 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 import { getCaretPosition } from '@/common/getTextAreaPos';
+import { Note } from '@prisma/client';
 
-export const useMentions = (setNewValue: (value: string) => unknown) => {
+export const useMentions = (
+  existingNotes: Note[],
+  setNewValue: (value: string) => unknown,
+  createNote: (argument: { name: string }) => Promise<Note>,
+) => {
   const [suggestionsVisible, setSuggestionVisible] = useState(false);
   const [suggestionsPosition, setSuggestionsPosition] = useState({
     x: 0,
@@ -16,6 +21,15 @@ export const useMentions = (setNewValue: (value: string) => unknown) => {
     position: -1,
   });
   const editorTextAreaRef = React.useRef<HTMLTextAreaElement>();
+
+  console.log(suggestionsPosition);
+
+  const filteredNotes = React.useMemo(() => {
+    return existingNotes.filter((note) =>
+      note.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [existingNotes, search]);
+
   React.useEffect(() => {
     const editorTextArea = editorTextAreaRef.current;
     if (editorTextArea && newCarretPosition.position > -1) {
@@ -32,13 +46,19 @@ export const useMentions = (setNewValue: (value: string) => unknown) => {
     if (e.key === 'ArrowDown') {
       if (suggestionsVisible) {
         e.preventDefault();
-        setSuggestionSelected((current) => (current + 1) % 2);
+        setSuggestionSelected(
+          (current) => (current + 1) % existingNotes.length,
+        );
       }
     }
     if (e.key === 'ArrowUp') {
       if (suggestionsVisible) {
         e.preventDefault();
-        setSuggestionSelected((current) => (current + 1) % 2);
+        setSuggestionSelected((current) =>
+          current - 1 < 0
+            ? existingNotes.length - 1
+            : (current - 1) % existingNotes.length,
+        );
       }
     }
     if (e.key === 'Escape') {
@@ -50,9 +70,16 @@ export const useMentions = (setNewValue: (value: string) => unknown) => {
     if (e.key === 'Enter') {
       if (suggestionsVisible) {
         e.preventDefault();
-        onSuggestionsFetchRequested(
-          suggestionSelected === 0 ? '[Notatka1](note1)' : '[Notatka2](note2)',
-        );
+        if (filteredNotes.length === 0) {
+          createNote({ name: search }).then((note) => {
+            onSuggestionsFetchRequested(`[${note.name}](${note.id})`);
+          });
+        } else {
+          const selectedNote = filteredNotes.at(suggestionSelected);
+          onSuggestionsFetchRequested(
+            selectedNote ? `[${selectedNote.name}](${selectedNote.id})` : '',
+          );
+        }
       }
     }
   };
@@ -101,5 +128,6 @@ export const useMentions = (setNewValue: (value: string) => unknown) => {
     onSuggestion: onSuggestionsFetchRequested,
     search,
     selectedSuggestion: suggestionSelected,
+    filteredNotes,
   };
 };

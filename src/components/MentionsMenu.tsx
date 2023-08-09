@@ -1,3 +1,4 @@
+import { Note } from '@prisma/client';
 import clsx from 'clsx';
 import { Menu } from 'react-daisyui';
 
@@ -6,39 +7,50 @@ export const MentionsMenu: React.FC<{
   suggestionChosenHandler: (value: string) => unknown;
   search: string;
   suggestionSelected: number;
+  options: { id: string; name: string }[];
+  createNote: (argument: { name: string }) => Promise<Note>;
 }> = ({
   suggestionsPosition,
   suggestionChosenHandler,
   search,
   suggestionSelected,
+  options,
+  createNote,
 }) => {
   return (
     <Menu
-      className="absolute bg-secondary translate-x-5 translate-y-full"
+      className="absolute bg-secondary translate-x-5 translate-y-32"
       style={{
         left: `${suggestionsPosition.x}px`,
         top: `${suggestionsPosition.y}px`,
       }}
     >
-      <Menu.Item>
-        <a>{search || 'ㅤ'}</a>
-      </Menu.Item>
-      <Menu.Item>
-        <button
-          onClick={() => suggestionChosenHandler('[Notatka1](note1)')}
-          className={clsx({ 'bg-accent': suggestionSelected === 0 })}
-        >
-          Notatka 1
-        </button>
-      </Menu.Item>
-      <Menu.Item>
-        <button
-          onClick={() => suggestionChosenHandler('[Notatka2](note2)')}
-          className={clsx({ 'bg-accent': suggestionSelected === 1 })}
-        >
-          Notatka 2
-        </button>
-      </Menu.Item>
+      {options.map((option, index) => (
+        <Menu.Item key={option.id}>
+          <button
+            onClick={() =>
+              suggestionChosenHandler(`[${option.name}](${option.id})`)
+            }
+            className={clsx({ 'bg-accent': suggestionSelected === index })}
+          >
+            {option.name}
+          </button>
+        </Menu.Item>
+      ))}
+      {options.length === 0 && (
+        <Menu.Item>
+          <button
+            onClick={() => {
+              createNote({ name: search }).then((note) => {
+                suggestionChosenHandler(`[${note.name}](${note.id})`);
+              });
+            }}
+            className="bg-accent"
+          >
+            Not found; press enter to create &quot;{search}&quot;
+          </button>
+        </Menu.Item>
+      )}
     </Menu>
   );
 };

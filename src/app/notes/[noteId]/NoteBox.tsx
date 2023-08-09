@@ -13,9 +13,13 @@ import { MentionsMenu } from '@/components/MentionsMenu';
 export const NoteBox = ({
   note,
   noteLinks,
+  otherNotes,
+  createNote,
 }: {
   note: Note;
   noteLinks: (NoteLink & { to: Note })[];
+  otherNotes: Note[];
+  createNote: (argument: { name: string }) => Promise<Note>;
 }) => {
   const [name, setName] = useState(note.name);
   const [noteMD, setNoteMD] = useState<string | undefined>(note.text);
@@ -30,7 +34,8 @@ export const NoteBox = ({
     onSuggestion,
     search,
     selectedSuggestion,
-  } = useMentions(setNoteMD);
+    filteredNotes,
+  } = useMentions(otherNotes, setNoteMD, createNote);
 
   const tags =
     note.tags.length !== 0 ? (
@@ -128,6 +133,8 @@ export const NoteBox = ({
                   suggestionChosenHandler={onSuggestion}
                   search={search}
                   suggestionSelected={selectedSuggestion}
+                  options={filteredNotes}
+                  createNote={createNote}
                 />
               )}
             </div>

@@ -7,8 +7,9 @@ import { Plus } from 'react-feather';
 
 export const CreateNewNote = () => {
   const addNewNote = async (form: FormData) => {
+    const name = form.get('name');
     try {
-      await addNote(form);
+      await addNote({ name: name as string });
     } catch (error: any) {
       toast(error.message);
     }
