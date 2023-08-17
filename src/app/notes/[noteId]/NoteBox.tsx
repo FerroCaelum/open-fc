@@ -111,20 +111,22 @@ export const NoteBox = ({
           </Button>
         </div>
         <div className="relative flex-1">
-          {descriptionEditing ? (
-            <div data-color-mode="dark" className="h-full relative">
-              <MDEditor
-                value={noteMD}
-                onChange={setNoteMD}
-                height="30rem"
-                textareaProps={{
-                  onKeyDown: onNoteMDKeydown,
-                  onKeyUp: onNoteMDKeyup,
-                }}
-              />
-              <MentionsMenu {...mentionsProps} />
-            </div>
-          ) : (
+          <div
+            data-color-mode="dark"
+            className={`h-full relative ${descriptionEditing ? '' : 'hidden'}`}
+          >
+            <MDEditor
+              value={noteMD}
+              onChange={setNoteMD}
+              height="30rem"
+              textareaProps={{
+                onKeyDown: onNoteMDKeydown,
+                onKeyUp: onNoteMDKeyup,
+              }}
+            />
+            <MentionsMenu {...mentionsProps} />
+          </div>
+          {!descriptionEditing && (
             <Markdown className="h-full my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
               {noteMD || ''}
             </Markdown>

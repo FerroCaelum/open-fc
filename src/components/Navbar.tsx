@@ -1,6 +1,5 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import Link from 'next/link';
-import { Avatar } from 'react-daisyui';
 import { DAINavbar, DAIAvatar } from './DaisyUIClient';
 
 export const Navbar = async (props: any) => {
