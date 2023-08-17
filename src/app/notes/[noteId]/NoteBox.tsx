@@ -7,18 +7,30 @@ import React, { useState } from 'react';
 import { Edit, Save } from 'react-feather';
 import MDEditor from '@uiw/react-md-editor';
 import Markdown from 'react-markdown';
+import { useMentions } from '@/components/mentions/useMentions';
+import { MentionsMenu } from '@/components/mentions/MentionsMenu';
 
 export const NoteBox = ({
   note,
   noteLinks,
+  otherNotes,
+  createNote,
 }: {
   note: Note;
   noteLinks: (NoteLink & { to: Note })[];
+  otherNotes: Note[];
+  createNote: (argument: { name: string }) => Promise<Note>;
 }) => {
   const [name, setName] = useState(note.name);
   const [noteMD, setNoteMD] = useState<string | undefined>(note.text);
   const [nameEditing, setNameEditing] = useState(false);
   const [descriptionEditing, setDescriptionEditing] = useState(false);
+
+  const {
+    onTextAreaKeyDown: onNoteMDKeydown,
+    onTextAreaKeyup: onNoteMDKeyup,
+    mentionsProps,
+  } = useMentions('[', otherNotes, setNoteMD, createNote);
 
   const tags =
     note.tags.length !== 0 ? (
@@ -100,8 +112,17 @@ export const NoteBox = ({
         </div>
         <div className="relative flex-1">
           {descriptionEditing ? (
-            <div data-color-mode="dark" className="h-full">
-              <MDEditor value={noteMD} onChange={setNoteMD} height="30rem" />
+            <div data-color-mode="dark" className="h-full relative">
+              <MDEditor
+                value={noteMD}
+                onChange={setNoteMD}
+                height="30rem"
+                textareaProps={{
+                  onKeyDown: onNoteMDKeydown,
+                  onKeyUp: onNoteMDKeyup,
+                }}
+              />
+              <MentionsMenu {...mentionsProps} />
             </div>
           ) : (
             <Markdown className="h-full my-2 p-4 prose max-w-none bg-base-200 border-t border-b border-secondary">
