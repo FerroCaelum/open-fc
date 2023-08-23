@@ -4,12 +4,16 @@ import React from 'react';
 import { addNote } from '@/app/notes/actions';
 import { Button, Input } from 'react-daisyui';
 import { Plus } from 'react-feather';
+import { useRouter } from 'next/navigation';
 
 export const CreateNewNote = () => {
+  const router = useRouter();
   const addNewNote = async (form: FormData) => {
     const name = form.get('name');
     try {
-      await addNote({ name: name as string });
+      const newNote = await addNote({ name: name as string });
+      router.push(`/notes/${newNote.id}`);
+      router.refresh();
     } catch (error: any) {
       toast(error.message);
     }
