@@ -31,7 +31,7 @@ export const NoteItem = ({ note }: { note: Note }) => {
               .then(() => {
                 if (path === `/notes/${note.id}`) {
                   router.push('/notes');
-                  router.refresh();
+                  // router.refresh();
                 }
               })
               .catch((error) => {
