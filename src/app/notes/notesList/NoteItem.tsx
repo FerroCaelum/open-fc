@@ -5,7 +5,7 @@ import { Trash2 } from 'react-feather';
 import { toast } from 'react-toastify';
 import { removeNote } from '@/app/notes/actions';
 import { Button } from 'react-daisyui';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ActiveLink } from '@/components/ActiveLink';
 
 export const NoteItem = ({ note }: { note: Note }) => {
@@ -31,6 +31,7 @@ export const NoteItem = ({ note }: { note: Note }) => {
               .then(() => {
                 if (path === `/notes/${note.id}`) {
                   router.push('/notes');
+                  router.refresh();
                 }
               })
               .catch((error) => {
